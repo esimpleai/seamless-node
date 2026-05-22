@@ -4,3 +4,5 @@ dist/
 .env
 .env.local
 .DS_Store
+# npm token lives here; never commit
+.npmrc
