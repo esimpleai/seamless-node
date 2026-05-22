@@ -1,5 +1,5 @@
 {
-  "name": "@seamless/node",
+  "name": "@withseamless/node",
   "version": "1.0.0",
   "description": "Official Node.js SDK for the Seamless Partner API.",
   "homepage": "https://docs.withseamless.com",

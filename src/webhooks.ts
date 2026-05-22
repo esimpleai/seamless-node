@@ -7,7 +7,7 @@
 //
 // Usage:
 //
-//   import { Webhooks } from "@seamless/node";
+//   import { Webhooks } from "@withseamless/node";
 //
 //   app.post("/webhooks/seamless", express.raw({type:"application/json"}), (req, res) => {
 //     try {

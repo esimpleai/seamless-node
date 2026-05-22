@@ -1,7 +1,7 @@
 // `Seamless` — the main entrypoint. Construct once per process,
 // reuse for every request.
 //
-//   import { Seamless } from "@seamless/node";
+//   import { Seamless } from "@withseamless/node";
 //   const seamless = new Seamless({ apiKey: process.env.SEAMLESS_API_KEY! });
 //   const me = await seamless.identity.me();
 //

@@ -67,7 +67,7 @@ export class HttpClient {
     this.baseUrl = opts.baseUrl ?? "https://api.withseamless.com/v1";
     this.apiVersion = opts.apiVersion;
     this.timeoutMs = opts.timeoutMs ?? 30_000;
-    this.userAgent = opts.userAgent ?? `@seamless/node/1.0.0`;
+    this.userAgent = opts.userAgent ?? `@withseamless/node/1.0.0`;
     this.fetchImpl = opts.fetchImpl ?? globalThis.fetch;
     if (!this.fetchImpl) {
       throw new Error("Seamless: no fetch available — pass `fetchImpl` for environments without global fetch.");

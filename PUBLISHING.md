@@ -1,9 +1,10 @@
-# Publishing `@seamless/node`
+# Publishing `@withseamless/node`
 
-Both `@seamless` and `@withseamless` org names were unclaimed on
-npm as of 2026-05-22. PARTNER-API.md's locked decision is
-`@seamless/*` first; fall back to `@withseamless/*` only if
-`seamless` becomes unavailable.
+The package ships under the `@withseamless` npm org (claimed
+2026-05-22). PARTNER-API.md's original locked decision was
+`@seamless/*` first / `@withseamless/*` as fallback; the operator
+went straight to `@withseamless` for brand consistency with the
+platform domain.
 
 ## One-time setup
 
@@ -28,7 +29,7 @@ npm publish --access public
 defaults scoped packages to private otherwise. Verify with:
 
 ```bash
-npm view @seamless/node version
+npm view @withseamless/node version
 # → 1.0.0
 ```
 

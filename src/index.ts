@@ -1,8 +1,8 @@
-// `@seamless/node` — official Node SDK for the Seamless Partner API.
+// `@withseamless/node` — official Node SDK for the Seamless Partner API.
 //
 // Quickstart:
 //
-//   import { Seamless } from "@seamless/node";
+//   import { Seamless } from "@withseamless/node";
 //   const seamless = new Seamless({ apiKey: process.env.SEAMLESS_API_KEY! });
 //
 //   const me = await seamless.identity.me();
@@ -14,7 +14,7 @@
 //
 // Webhook verification:
 //
-//   import { Webhooks } from "@seamless/node";
+//   import { Webhooks } from "@withseamless/node";
 //   const event = Webhooks.constructEvent(rawBody, signatureHeader, secret);
 
 export { Seamless } from "./client.js";

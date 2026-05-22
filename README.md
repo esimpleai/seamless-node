@@ -1,4 +1,4 @@
-# @seamless/node
+# @withseamless/node
 
 Official Node.js SDK for the [Seamless Partner API](https://docs.withseamless.com).
 
@@ -8,7 +8,7 @@ or MVNO. Catalog → quote → order → activate → top-up → refund, all beh
 ## Install
 
 ```bash
-npm install @seamless/node
+npm install @withseamless/node
 ```
 
 Requires Node 18+ (uses the global `fetch`).
@@ -16,7 +16,7 @@ Requires Node 18+ (uses the global `fetch`).
 ## Authenticate
 
 ```ts
-import { Seamless } from "@seamless/node";
+import { Seamless } from "@withseamless/node";
 
 const seamless = new Seamless({
   apiKey: process.env.SEAMLESS_API_KEY!,  // sk_test_… or sk_live_…
@@ -74,7 +74,7 @@ body → `409 idempotency_mismatch`.
 ## Errors
 
 ```ts
-import { SeamlessError } from "@seamless/node";
+import { SeamlessError } from "@withseamless/node";
 
 try {
   await seamless.orders.create({ /* ... */ });
@@ -95,7 +95,7 @@ try {
 Verify incoming events with the same primitive the platform uses to sign them:
 
 ```ts
-import { Webhooks } from "@seamless/node";
+import { Webhooks } from "@withseamless/node";
 
 app.post("/webhooks/seamless", express.raw({ type: "application/json" }), (req, res) => {
   try {
