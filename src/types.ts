@@ -31,12 +31,17 @@ export interface Country {
   is_test: boolean;
 }
 
+/** fixed: data_mb for the whole validity · daily: data_mb resets every day · unlimited: no cap (fair use). */
+export type PlanKind = "fixed" | "daily" | "unlimited";
+
 export interface Package {
   object: "package";
   package_detail_id: number;
   name: string;
+  /** MB (1 GB = 1024 MB); per day when kind is "daily"; null when unlimited. */
   data_mb: number | null;
   validity_days: number | null;
+  kind: PlanKind;
   is_unlimited: boolean;
   /** @deprecated Always null since 2026-11-03: the fulfilling network partner is chosen at provisioning time. */
   provider: null;
@@ -77,7 +82,8 @@ export interface CoverageResult {
 
 export interface PriceQuote {
   object: "price_quote";
-  token: string;
+  /** Pass back as price_quote_token on the order line to lock the price for 15 minutes. Null for free items (the Sandbox SKU). */
+  token: string | null;
   package_detail_id: number;
   quantity: number;
   unit_price_usd: AmountUsd;
@@ -162,6 +168,7 @@ export interface Esim {
   country_iso2: Iso3166Alpha2[];
   validity_days: number | null;
   data_mb: number | null;
+  kind: PlanKind;
   is_unlimited: boolean;
   activated_at: string | null;
   expires_at: string | null;

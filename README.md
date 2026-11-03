@@ -23,26 +23,49 @@ const seamless = new Seamless({
 });
 ```
 
-The key prefix decides whether you hit the sandbox (`sk_test_`, real providers
-swapped for the Sandbox SKU) or production (`sk_live_`, real providers + real
-charges).
+The key prefix decides whether you hit the sandbox (`sk_test_`) or production
+(`sk_live_`, real plans + real wallet charges). See [Sandbox](#sandbox).
 
-## Quickstart — buy an eSIM in 10 lines
+## Quickstart — issue an eSIM
 
 ```ts
-const spain   = await seamless.catalog.getCountry("spain");
-const pack    = spain.packages[0]!;
-const order   = await seamless.orders.create({
-  lines: [{ package_detail_id: pack.package_detail_id }],
+// Browse real plans and prices — works with a sandbox key.
+const japan = await seamless.catalog.getCountry("japan");
+console.log(`Japan: ${japan.package_count} plans from $${japan.starts_at_usd}`);
+
+// A sandbox key orders the free Sandbox SKU; a live key orders any plan.
+const { packages: [plan] } = await seamless.catalog.getCountry("sandbox");
+let order = await seamless.orders.create({
+  lines: [{ package_detail_id: plan!.package_detail_id }],
   payment_mode: "partner_wallet",
   customer: { email: "traveller@example.com" },
 });
+
+// eSIMs are issued asynchronously, usually within seconds.
+// Poll as below, or listen for the order.provisioned webhook.
+while (order.lines[0]!.sims[0]!.status === "pending") {
+  await new Promise((r) => setTimeout(r, 2000));
+  order = await seamless.orders.retrieve(order.id);
+}
+
 const sim     = order.lines[0]!.sims[0]!;
 const install = await seamless.esims.installLink(sim.iccid!);
-
 console.log(`Apple one-tap:   ${install.apple_url}`);
 console.log(`Android one-tap: ${install.android_url}`);
 ```
+
+To lock a price you showed the customer, quote first and pass the token back:
+
+```ts
+const quote = await seamless.pricing.quote(packageDetailId, 1);   // valid 15 minutes
+await seamless.orders.create({
+  lines: [{ package_detail_id: packageDetailId, price_quote_token: quote.token ?? undefined }],
+  payment_mode: "partner_wallet",
+});
+```
+
+Plans: `data_mb` is binary (1 GB = 1024 MB). `kind` is `"fixed"` (data for the
+whole validity), `"daily"` (`data_mb` resets every day) or `"unlimited"`.
 
 ## Resources
 
@@ -105,7 +128,7 @@ app.post("/webhooks/seamless", express.raw({ type: "application/json" }), (req, 
       process.env.SEAMLESS_WEBHOOK_SECRET!,
     );
     switch (event.type) {
-      case "order.provisioned": /* … */ break;
+      case "order.provisioned": /* eSIM issued — ICCID + activation in the payload */ break;
       case "order.failed":      /* … */ break;
     }
     res.status(200).end();
@@ -115,7 +138,10 @@ app.post("/webhooks/seamless", express.raw({ type: "application/json" }), (req, 
 });
 ```
 
-5-minute replay window enforced; constant-time HMAC compare.
+5-minute replay window enforced; constant-time HMAC compare. Events:
+`order.created`, `order.paid`, `order.provisioned`, `order.failed`,
+`topup.applied`, `topup.failed`, `wallet.low_balance`, `wallet.topup_received`.
+Register endpoints in the partner portal (Webhooks).
 
 ## API version pinning
 
@@ -130,9 +156,14 @@ Without `apiVersion`, the API responds in the version your key was issued under.
 
 ## Sandbox
 
-Every endpoint works in sandbox with the same shapes. Catalog includes a `$0`
-Sandbox SKU you can use to exercise the full flow without burning real provider
-credit. Reset between integration runs:
+A sandbox key (`sk_test_`) sees the real catalogue and real prices, so you can
+build your storefront against live data. Orders and top-ups are limited to the
+free Sandbox SKU (`seamless.catalog.getCountry("sandbox")`), which issues a test
+eSIM within seconds — the whole order → eSIM → install link → top-up → refund
+flow runs without money. Ordering any other plan with a sandbox key throws
+`non_sandbox_package_for_test_key`.
+
+`sandbox.reset()` cancels sandbox orders that haven't been fulfilled:
 
 ```ts
 const sandbox = new Seamless({ apiKey: "sk_test_…" });
