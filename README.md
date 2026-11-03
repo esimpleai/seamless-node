@@ -73,7 +73,7 @@ whole validity), `"daily"` (`data_mb` resets every day) or `"unlimited"`.
 |---------------------|---------|
 | `seamless.catalog`  | `listCountries`, `getCountry`, `listRegions`, `getRegion`, `listGlobalPackages`, `search`, `coverage` |
 | `seamless.pricing`  | `quote`, `quoteCart` |
-| `seamless.orders`   | `create`, `retrieve`, `list`, `lines`, `cancel`, `resendActivation`, `listRefunds`, `createRefund` |
+| `seamless.orders`   | `create`, `retrieve`, `list`, `lines`, `cancel`, `resendActivation`, `refundEligibility`, `listRefunds`, `createRefund` |
 | `seamless.esims`    | `retrieve`, `activation`, `usage`, `installLink` |
 | `seamless.topups`   | `listAvailable`, `list`, `create` |
 | `seamless.refunds`  | `retrieve` |

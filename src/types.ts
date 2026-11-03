@@ -240,7 +240,10 @@ export interface CreateTopupRequest {
 // ── Refunds ──────────────────────────────────────────────────────
 
 export interface CreateRefundRequest {
-  amount_usd: AmountUsd | number;
+  /** The eSIM to refund. Optional when the order has a single eSIM. */
+  iccid?: string;
+  /** Optional; refunds are always the eSIM's full price. */
+  amount_usd?: AmountUsd | number;
   reason: "requested_by_customer" | "duplicate" | "fraudulent" | "provisioning_failed" | "other";
   notes?: string;
 }
@@ -249,12 +252,34 @@ export interface Refund {
   object: "refund";
   id: string;
   order_id: string;
+  iccid: string | null;
   amount_usd: AmountUsd;
+  /** `pending` while the network partner reviews it; `succeeded` once the wallet is credited. */
   status: "pending" | "succeeded" | "failed" | "cancelled";
+  settlement: RefundSettlement | null;
   reason: string;
   notes: string | null;
   created_at: string;
   completed_at: string | null;
+}
+
+/** `instant` = credited on request; `review` = the network partner decides first. */
+export type RefundSettlement = "instant" | "review";
+
+export interface RefundEligibility {
+  object: "refund_eligibility";
+  order_id: string;
+  refundable_until: string;
+  esims: Array<{
+    iccid: string | null;
+    eligible: boolean;
+    /** `not_installed` when eligible; otherwise why not (e.g. `installed`, `in_use`, `window_closed`). */
+    reason: string;
+    /** Plain-English reason, safe to show. */
+    message: string | null;
+    amount_usd: AmountUsd;
+    settlement: RefundSettlement | null;
+  }>;
 }
 
 // ── Wallet ───────────────────────────────────────────────────────

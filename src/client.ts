@@ -122,6 +122,10 @@ class OrdersResource {
       { body, idempotencyKey: opts.idempotencyKey },
     );
   }
+  /** Which eSIMs can be refunded, asked live of each eSIM's network partner. */
+  refundEligibility(id: string) {
+    return this.http.get<T.RefundEligibility>(`/orders/${encodeURIComponent(id)}/refund-eligibility`);
+  }
   listRefunds(id: string) {
     return this.http.get<T.List<T.Refund>>(`/orders/${encodeURIComponent(id)}/refunds`);
   }
