@@ -1,6 +1,6 @@
 {
   "name": "@withseamless/node",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Official Node.js SDK for the Seamless Partner API.",
   "homepage": "https://docs.withseamless.com",
   "repository": {
