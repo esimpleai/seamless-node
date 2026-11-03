@@ -38,7 +38,8 @@ export interface Package {
   data_mb: number | null;
   validity_days: number | null;
   is_unlimited: boolean;
-  provider: "keepgo" | "redtea" | "maya" | "sandbox" | "unknown";
+  /** @deprecated Always null since 2026-11-03: the fulfilling network partner is chosen at provisioning time. */
+  provider: null;
   country_iso2: Iso3166Alpha2[];
   price_usd: AmountUsd;
 }
