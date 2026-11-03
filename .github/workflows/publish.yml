@@ -1,0 +1,32 @@
+# Publishes @withseamless/node to npm when a version tag (v1.2.3) is
+# pushed. The tag must match package.json's version. Needs the repo
+# secret NPM_TOKEN: an npm "Automation" token (bypasses 2FA) from an
+# account in the @withseamless org.
+name: Publish to npm
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+      - name: Tag matches package.json
+        run: |
+          v="$(node -p "require('./package.json').version")"
+          [ "v$v" = "$GITHUB_REF_NAME" ] || { echo "Tag $GITHUB_REF_NAME does not match package.json version $v"; exit 1; }
+      - run: npm ci
+      - run: npm run build
+      - run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

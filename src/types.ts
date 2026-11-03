@@ -222,7 +222,8 @@ export interface Topup {
   id: string;
   iccid: string;
   provider_package_code: string;
-  status: "pending" | "paid" | "applied" | "failed";
+  /** `awaiting_payment` = a `link` top-up whose checkout hasn't been paid yet. */
+  status: "awaiting_payment" | "pending" | "paid" | "applied" | "failed";
   amount_usd: AmountUsd;
   data_mb: number | null;
   validity_days: number | null;
@@ -297,9 +298,12 @@ export interface Wallet {
 export interface WalletTopupSession {
   object: "wallet_topup_session";
   id: string;
+  /** Hosted checkout (live), or your own success_url for a sandbox top-up. */
   url: string;
   amount: AmountUsd;
   expires_at: string | null;
+  /** `complete` for sandbox top-ups, which credit at once with no card. */
+  status: "open" | "complete";
 }
 
 export interface WalletTransaction {

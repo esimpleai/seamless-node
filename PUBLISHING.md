@@ -18,7 +18,19 @@ platform domain.
 
 ## Publish
 
-From `seamless-node/`:
+**Automated (since 1.3.0):** bump `version` in package.json, commit, then
+push a matching tag. `.github/workflows/publish.yml` builds and publishes.
+
+```bash
+npm version minor -m "release: v%s — <summary>"   # bumps, commits, tags
+git push origin dev --follow-tags
+```
+
+Needs the repo secret `NPM_TOKEN` (an npm Automation token, which
+bypasses 2FA): npmjs.com → Access Tokens → Generate → Automation, then
+`gh secret set NPM_TOKEN --repo esimpleai/seamless-node`.
+
+**Manual fallback**, from `seamless-node/`:
 
 ```bash
 npm run build      # emits dist/
